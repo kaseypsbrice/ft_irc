@@ -13,8 +13,9 @@
 #ifndef IRC_HPP
 # define IRC_HPP
 
-# include <iostream>
+# define MESSAGE_BUF 2048
+# define VALID_COMMANDS 17
 
-
+# include "Server.hpp"
 
 #endif
