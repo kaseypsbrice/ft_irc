@@ -1,7 +1,7 @@
 # include "irc.hpp"
 
-// stolen function to process commands
-int	Server::execute_command(std::string command)
+// stolen function to process commands (we dont need to do all of these I think)
+int	Server::execute_command(t_cmd cmd)
 {
 	std::string	valid_cmds[VALID_COMMANDS] = {
 		"INVITE",
@@ -32,7 +32,7 @@ int	Server::execute_command(std::string command)
 
 	while (index < VALID_COMMANDS)
 	{
-		if (command == valid_cmds[index])
+		if (cmd.name == valid_cmds[index])
 			break;
 		index++;
 	}
@@ -47,7 +47,7 @@ int	Server::execute_command(std::string command)
 		case 6: ; break;
 		case 7: ; break;
 		case 8: ; break;
-		case 9: ; break;
+		case 9: command_nick(cmd); break;
     	case 10: ; break;
 		case 11: ; break;
 		case 12: ; break;
@@ -57,8 +57,9 @@ int	Server::execute_command(std::string command)
 		case 16: ; break;
 		case 17: ; break;
 		default:
-			std::cout << "Command not found: " << command << std::endl;
+			std::cout << "Command not found: " << cmd.name << std::endl;
 			//addToClientBuffer(this, client_fd, ERR_UNKNOWNCOMMAND(client->getNickname(), cmd_infos.name));
 	}
 	return 0;
 }
+

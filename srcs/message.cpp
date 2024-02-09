@@ -1,5 +1,47 @@
 # include "irc.hpp"
 
+int Server::process_message(Client *client)
+{
+	int			line_break;
+	std::string line;
+	std::string &readbuf = client->get_readbuf();
+	
+	// IRC commands are terminated by "\r\n"
+	while (readbuf.find("\r\n") != std::string::npos)
+	{
+		//printf("size: %ld\n", readbuf.size());
+		t_cmd	cmd;
+		cmd.client = client;
+		line_break = readbuf.find("\r\n");
+		line = readbuf.substr(0, line_break);
+		
+		if (line[0] == ':')
+		{
+			cmd.prefix = line.substr(0, line.find(" "));
+			line = line.substr(line.find(" ") + 1);
+		}
+		cmd.name = line.substr(0, line.find(" "));
+		if (line.find(" ") != std::string::npos)
+		{
+			line = line.substr(line.find(" ") + 1);
+			cmd.message = line;
+		}
+
+		for (size_t i = 0; i < cmd.name.size(); i++)
+			cmd.name[i] = std::toupper(cmd.name[i]);
+		
+		printf("Command Name:    %s | %ld\n", cmd.name.c_str(), cmd.name.size());
+		printf("Command Prefix:  %s | %ld\n", cmd.prefix.c_str(), cmd.prefix.size());
+		printf("Command Message: %s | %ld\n", cmd.message.c_str(), cmd.message.size());
+
+		execute_command(cmd);
+
+		//printf("lb: %d size: %ld\n", line_break + 2, readbuf.size());
+		readbuf = readbuf.substr(line_break + 2);
+	}
+	return (0);
+}
+
 int	Server::handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it)
 {
 	Client	*client;
@@ -24,5 +66,6 @@ int	Server::handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<po
 	std::cout << "Recieved Message:" << std::endl << message;
 	// messages are buffered in case of partial data transfer
 	client->set_readbuf(message);
+	process_message(client);
 	return 0;
 }

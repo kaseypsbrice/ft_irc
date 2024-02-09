@@ -14,6 +14,14 @@
 # include <map>
 # include "Client.hpp"
 
+typedef struct s_cmd 
+{
+	std::string	name;
+	std::string	prefix;
+	std::string	message;
+	Client		*client;
+}	t_cmd;
+
 class Server
 {
 private:
@@ -26,8 +34,10 @@ private:
 
 	int accept_socket(int listenSocket) const;
 	int new_connection(std::vector<pollfd> &poll_fds, std::vector<pollfd> &new_poll_fds);
-	int	execute_command(std::string command);
+	int	execute_command(t_cmd cmd);
 	int handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it);
+	int	process_message(Client *client);
+	void command_nick(t_cmd cmd);
 public:
 	Server(std::string port, std::string password);
 	~Server();
