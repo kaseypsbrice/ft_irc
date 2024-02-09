@@ -1,8 +1,9 @@
-NAME	= ircserv
+NAME	= ft_irc
 
-HPP 	= ./includes/
+HPP 	= includes
 
-SRCS	= srcs/*.cpp \
+SRCS	= srcs/main.cpp\
+ srcs/Server.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
@@ -17,8 +18,11 @@ RESET	= \e[0m
 all: $(NAME)
 
 $(NAME): $(OBJS)
-		@$(CC) $(FLAGS) -I $(HPP) $(OBJS) -o $(NAME)
+		$(CC) $(FLAGS) -I $(HPP) $(OBJS) -o $(NAME)
 		@printf "$(GREEN)Executable created$(RESET)\n"
+
+$(OBJS): %.o: %.cpp
+		$(CC) -c -I $(HPP) $< $(FLAGS) -o $@
 
 clean:
 		@rm -f $(OBJS)
