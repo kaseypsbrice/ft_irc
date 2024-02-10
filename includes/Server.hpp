@@ -13,6 +13,7 @@
 # include <cerrno>
 # include <map>
 # include "Client.hpp"
+# include "replies.hpp"
 
 typedef struct s_cmd 
 {
@@ -36,8 +37,10 @@ private:
 	int new_connection(std::vector<pollfd> &poll_fds, std::vector<pollfd> &new_poll_fds);
 	int	execute_command(t_cmd cmd);
 	int handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it);
+	int handle_poll_out(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it);
 	int	process_message(Client *client);
 	void command_nick(t_cmd cmd);
+	void send_reply(const int client_fd, std::string buf);
 public:
 	Server(std::string port, std::string password);
 	~Server();

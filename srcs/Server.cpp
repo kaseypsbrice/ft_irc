@@ -125,6 +125,10 @@ int	Server::server_loop()
 					handle_existing_client(poll_fds, it);
 				}
 			}
+			else if (it->revents & POLLOUT)
+			{
+				handle_poll_out(poll_fds, it);
+			}
 			it++;
 		}
 		// add any new connections to the vector to poll

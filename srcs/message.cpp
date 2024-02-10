@@ -42,6 +42,25 @@ int Server::process_message(Client *client)
 	return (0);
 }
 
+void Server::send_reply(const int client_fd, std::string buf)
+{
+	send(client_fd, buf.c_str(), buf.size(), 0);
+}
+
+int Server::handle_poll_out(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it)
+{
+	Client *client = get_client(it->fd);
+	if (!client)
+	{
+		std::cout << "handle_poll_out: failed to find client" << std::endl;
+		return 0;
+	}
+	send_reply(it->fd, client->get_writebuf());
+	client->get_writebuf().clear();
+	(void)poll_fds; // todo client disconnect
+	return 0;
+}
+
 int	Server::handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it)
 {
 	Client	*client;
