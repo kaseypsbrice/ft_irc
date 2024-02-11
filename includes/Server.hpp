@@ -12,7 +12,9 @@
 # include <vector>
 # include <cerrno>
 # include <map>
+# include <vector>
 # include "Client.hpp"
+# include "Channel.hpp"
 # include "replies.hpp"
 
 typedef struct s_cmd 
@@ -32,7 +34,9 @@ private:
 	std::string				_port;
 	std::string				_password;
 	std::map<const int, Client> _client_map;
+	std::map<std::string, Channel> _channel_map;
 
+	std::string	get_list_of_members(Channel *channel);
 	int accept_socket(int listenSocket) const;
 	int new_connection(std::vector<pollfd> &poll_fds, std::vector<pollfd> &new_poll_fds);
 	int	execute_command(t_cmd cmd);
@@ -41,7 +45,12 @@ private:
 	int	process_message(Client *client);
 	void command_nick(t_cmd cmd);
 	void command_user(t_cmd cmd);
+	void command_privmsg(t_cmd cmd);
+	void command_join(t_cmd cmd);
 	void send_reply(const int client_fd, std::string buf);
+	void add_client_to_channel(std::string name, Client *client);
+	void new_channel(std::string name);
+	void broadcast_channel_join(Channel *channel, Client *client);
 	bool is_nick_taken(std::string nick, const int client_fd);
 public:
 	Server(std::string port, std::string password);
@@ -49,7 +58,8 @@ public:
 	int	create_server();
 	int	server_loop();
 
-	Client* get_client(const int client_fd);
+	Client *get_client(const int client_fd);
+	Channel *get_channel(std::string name);
 };
 
 #endif

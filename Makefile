@@ -1,14 +1,17 @@
-NAME	= ft_irc
+NAME	= ircserv
 
 HPP 	= includes
 
 SRCS	= srcs/main.cpp \
 srcs/Server.cpp \
 srcs/Client.cpp \
+srcs/Channel.cpp \
 srcs/message.cpp \
 srcs/commands.cpp \
 srcs/commands/nick.cpp \
-srcs/commands/user.cpp
+srcs/commands/user.cpp \
+srcs/commands/privmsg.cpp \
+srcs/commands/join.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

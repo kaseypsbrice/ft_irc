@@ -137,6 +137,19 @@ int	Server::server_loop()
 	return 0;
 }
 
+void Server::add_client_to_channel(std::string name, Client *client)
+{
+	Channel *channel;
+
+	channel = get_channel(name);
+	if (!channel)
+	{
+		std::cout << "Could not find channel" << std::endl;
+		return ;
+	}
+	channel->add_client(client);
+}
+
 // looks up the client in the map by its file descriptor
 Client* Server::get_client(const int client_fd)
 {
@@ -145,4 +158,21 @@ Client* Server::get_client(const int client_fd)
 	if (it_client == _client_map.end())
 		return (NULL);
 	return (&it_client->second);
+}
+
+// looks up the channel in the map by its name
+Channel* Server::get_channel(std::string name)
+{
+	std::map<std::string, Channel>::iterator it_channel = _channel_map.find(name);
+	
+	if (it_channel == _channel_map.end())
+		return (NULL);
+	return (&it_channel->second);
+}
+
+void Server::new_channel(std::string name)
+{
+	Channel new_channel(name);
+
+	_channel_map.insert(std::pair<std::string, Channel>(name, new_channel));
 }

@@ -40,7 +40,7 @@ int	Server::execute_command(t_cmd cmd)
 	switch (index + 1)
 	{
 		case 1: ; break;
-		case 2: ; break;
+		case 2: command_join(cmd); break;
 		case 3: ; break;
 		case 4: ; break;
 		case 5: ; break;
@@ -52,7 +52,7 @@ int	Server::execute_command(t_cmd cmd)
 		case 11: ; break;
 		case 12: ; break;
 		case 13: ; break;
-		case 14: ; break;
+		case 14: command_privmsg(cmd); break;
 		case 15: ; break;
 		case 16: ; break;
 		case 17: command_user(cmd); break;
