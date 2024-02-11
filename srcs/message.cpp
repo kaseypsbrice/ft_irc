@@ -30,9 +30,9 @@ int Server::process_message(Client *client)
 		for (size_t i = 0; i < cmd.name.size(); i++)
 			cmd.name[i] = std::toupper(cmd.name[i]);
 		
-		printf("Command Name:    %s | %ld\n", cmd.name.c_str(), cmd.name.size());
-		printf("Command Prefix:  %s | %ld\n", cmd.prefix.c_str(), cmd.prefix.size());
-		printf("Command Message: %s | %ld\n", cmd.message.c_str(), cmd.message.size());
+		//printf("Command Name:    %s | %ld\n", cmd.name.c_str(), cmd.name.size());
+		//printf("Command Prefix:  %s | %ld\n", cmd.prefix.c_str(), cmd.prefix.size());
+		//printf("Command Message: %s | %ld\n", cmd.message.c_str(), cmd.message.size());
 
 		execute_command(cmd);
 

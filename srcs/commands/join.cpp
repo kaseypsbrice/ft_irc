@@ -155,7 +155,7 @@ void Server::command_join(t_cmd cmd)
 				keys_it++;
 			continue;
 		}
-		// todo check if banned
+		// todo check if banned or invite only
 
 		add_client_to_channel(*channels_it, cmd.client);
 		

@@ -72,6 +72,7 @@ void Channel::remove_client(Client *client)
 
 bool Channel::is_full()
 {
+	// todo ~this~
 	return false;
 }
 

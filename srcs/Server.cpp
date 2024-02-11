@@ -160,6 +160,19 @@ Client* Server::get_client(const int client_fd)
 	return (&it_client->second);
 }
 
+// looks up the client by nickname
+Client *Server::get_client_by_nick(std::string nick)
+{
+	std::map<const int, Client>::iterator it;
+
+	for (it = _client_map.begin(); it != _client_map.end(); it++)
+	{
+		if (it->second.get_nick() == nick)
+			return &it->second;
+	}
+	return NULL;
+}
+
 // looks up the channel in the map by its name
 Channel* Server::get_channel(std::string name)
 {

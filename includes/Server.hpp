@@ -51,6 +51,7 @@ private:
 	void add_client_to_channel(std::string name, Client *client);
 	void new_channel(std::string name);
 	void broadcast_channel_join(Channel *channel, Client *client);
+	void broadcast_channel_message(Channel *channel, Client *client, std::string target, std::string message);
 	bool is_nick_taken(std::string nick, const int client_fd);
 public:
 	Server(std::string port, std::string password);
@@ -59,6 +60,7 @@ public:
 	int	server_loop();
 
 	Client *get_client(const int client_fd);
+	Client *get_client_by_nick(std::string nick);
 	Channel *get_channel(std::string name);
 };
 
