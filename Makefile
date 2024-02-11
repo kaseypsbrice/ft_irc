@@ -7,7 +7,8 @@ srcs/Server.cpp \
 srcs/Client.cpp \
 srcs/message.cpp \
 srcs/commands.cpp \
-srcs/commands/nick.cpp
+srcs/commands/nick.cpp \
+srcs/commands/user.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

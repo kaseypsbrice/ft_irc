@@ -11,6 +11,7 @@ private:
 	std::string	_nick;
 	std::string	_old_nick;
 	std::string	_user;
+	std::string	_real;
 	int			_client_fd;
 	bool		_registered_nick;
 	bool		_registered_user;
@@ -30,6 +31,9 @@ public:
 	std::string &get_old_nick();
 	void set_user(std::string const &buf);
 	std::string &get_user();
+	void set_real(std::string const &buf);
+	std::string &get_real();
+	int get_client_fd();
 	bool is_nick_registered();
 	void set_nick_registered(bool val);
 	bool is_user_registered();

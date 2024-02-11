@@ -17,6 +17,9 @@ void Client::set_old_nick(std::string const &buf) {_old_nick = buf; }
 std::string &Client::get_old_nick() { return _old_nick; }
 void Client::set_user(std::string const &buf) { _user = buf; }
 std::string &Client::get_user() { return _user; }
+void Client::set_real(std::string const &buf) { _real = buf; }
+std::string &Client::get_real() { return _real; }
+int Client::get_client_fd() { return _client_fd; }
 
 bool Client::is_nick_registered() { return _registered_nick; }
 void Client::set_nick_registered(bool val) { _registered_nick = val; }

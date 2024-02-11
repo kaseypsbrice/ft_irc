@@ -9,9 +9,20 @@ static bool invalid_nick(std::string nick)
 	return false;
 }
 
+bool Server::is_nick_taken(std::string nick, const int client_fd)
+{
+	std::map<const int, Client>::iterator it;
+
+	for (it = _client_map.begin(); it != _client_map.end(); it++)
+	{
+		if (it->second.get_nick() == nick && it->first != client_fd)
+			return true;
+	}
+	return false;
+}
+
 void Server::command_nick(t_cmd cmd)
 {
-	// todo check for duplicate nicks
 	if (cmd.message.size() == 0)
 	{
 		cmd.client->set_writebuf(ERR_NONICKNAMEGIVEN(cmd.client->get_nick()));
@@ -20,6 +31,11 @@ void Server::command_nick(t_cmd cmd)
 	else if (invalid_nick(cmd.message))
 	{
 		cmd.client->set_writebuf(ERR_ERRONEUSNICKNAME(cmd.client->get_nick(), cmd.message));
+		return ;
+	}
+	else if (is_nick_taken(cmd.message, cmd.client->get_client_fd()))
+	{
+		cmd.client->set_writebuf(ERR_NICKNAMEINUSE(cmd.client->get_nick(), cmd.message));
 		return ;
 	}
 	if (cmd.client->is_registered())

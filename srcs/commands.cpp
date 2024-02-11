@@ -55,7 +55,7 @@ int	Server::execute_command(t_cmd cmd)
 		case 14: ; break;
 		case 15: ; break;
 		case 16: ; break;
-		case 17: ; break;
+		case 17: command_user(cmd); break;
 		default:
 			std::cout << "Command not found: " << cmd.name << std::endl;
 			//addToClientBuffer(this, client_fd, ERR_UNKNOWNCOMMAND(client->getNickname(), cmd_infos.name));

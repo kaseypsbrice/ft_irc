@@ -40,7 +40,9 @@ private:
 	int handle_poll_out(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it);
 	int	process_message(Client *client);
 	void command_nick(t_cmd cmd);
+	void command_user(t_cmd cmd);
 	void send_reply(const int client_fd, std::string buf);
+	bool is_nick_taken(std::string nick, const int client_fd);
 public:
 	Server(std::string port, std::string password);
 	~Server();
