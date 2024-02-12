@@ -1,9 +1,13 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name) : _name(name)
+Channel::Channel(std::string name) : _name(name), _capacity(-1)
 {
 	_channel_password.clear();
 	_operator_password.clear();
+	_mode.clear();
+	_topic.clear();
+	_operators.clear();
+	_client_map.clear();
 }
 
 Channel::~Channel()
@@ -12,8 +16,13 @@ Channel::~Channel()
 std::string &Channel::get_name() { return _name; }
 std::string &Channel::get_topic() { return _topic; }
 std::string &Channel::get_channel_password() { return _channel_password; }
+std::string &Channel::get_mode() { return _mode; }
 std::vector<int> &Channel::get_operators() { return _operators; }
 std::map<const int, Client *> &Channel::get_client_map() { return _client_map; }
+void Channel::set_channel_password(std::string pass) { _channel_password = pass; }
+void Channel::remove_channel_password() {_channel_password.clear(); }
+int	&Channel::get_capacity() { return _capacity; }
+void Channel::set_capacity(int val) { _capacity = val; }
 
 Client *Channel::get_client_by_name(std::string client_name)
 {
@@ -79,7 +88,10 @@ int Channel::remove_client(Client *client)
 
 bool Channel::is_full()
 {
-	// todo ~this~
+	if (_capacity == -1)
+		return false;
+	if ((int)_client_map.size() >= _capacity)
+		return true;
 	return false;
 }
 
@@ -107,4 +119,28 @@ std::string Channel::get_symbol()
 	else
 		symbol += "=";
 	return symbol;
+}
+
+void	Channel::add_mode(std::string const mode)
+{
+	if (_mode.empty() == true)
+		_mode = "+" + mode;
+	else 
+		_mode += mode;
+}
+
+void	Channel::remove_mode(std::string const mode)
+{
+	size_t pos = _mode.find(mode);
+	_mode.erase(pos, 1);
+}
+
+void	Channel::broadcast_string(std::string str)
+{
+	std::map<const int, Client *>::iterator it;
+
+	for (it = _client_map.begin(); it != _client_map.end(); it++)
+	{
+		it->second->set_writebuf(str);
+	}
 }

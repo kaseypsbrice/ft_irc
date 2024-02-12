@@ -4,22 +4,22 @@
 int	Server::execute_command(t_cmd cmd)
 {
 	std::string	valid_cmds[VALID_COMMANDS] = {
-		"INVITE",
+		"INVITE", //
 		"JOIN",
-		"KICK",
+		"KICK", //
 		"KILL",
 		"LIST",
-		"MODE",
+		"MODE", //
 		"MOTD",
 		"NAMES",
 		"NICK",
 		"PASS",
-		"OPER",
-		"PART",
+		"OPER", //
+		"PART", //
 		"PING",
 		"PRIVMSG",
 		"QUIT",
-		"TOPIC",
+		"TOPIC", //
 		"USER",
 		};
 
@@ -39,26 +39,26 @@ int	Server::execute_command(t_cmd cmd)
 
 	switch (index + 1)
 	{
-		case 1: ; break;
+		case 1: ; break; // invite
 		case 2: command_join(cmd); break;
-		case 3: ; break;
+		case 3: ; break; // kick
 		case 4: ; break;
 		case 5: ; break;
-		case 6: ; break;
+		case 6: command_mode(cmd); break;
 		case 7: ; break;
 		case 8: ; break;
 		case 9: command_nick(cmd); break;
     	case 10: command_pass(cmd); break;
-		case 11: ; break;
-		case 12: ; break;
+		case 11: ; break; // oper
+		case 12: ; break; // part
 		case 13: ; break;
 		case 14: command_privmsg(cmd); break;
 		case 15: command_quit(cmd); break;
-		case 16: ; break;
+		case 16: ; break; // topic
 		case 17: command_user(cmd); break;
 		default:
 			std::cout << "Command not found: " << cmd.name << std::endl;
-			//addToClientBuffer(this, client_fd, ERR_UNKNOWNCOMMAND(client->getNickname(), cmd_infos.name));
+			cmd.client->set_writebuf(ERR_UNKNOWNCOMMAND(cmd.client->get_nick(), cmd.name));
 	}
 	return 0;
 }

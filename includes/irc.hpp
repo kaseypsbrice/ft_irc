@@ -19,5 +19,6 @@
 # include "Server.hpp"
 
 std::string	get_reason(std::string msg);
+bool is_alpha(std::string str);
 
 #endif

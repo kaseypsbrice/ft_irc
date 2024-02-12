@@ -16,6 +16,7 @@
 # include <fstream>
 # include <unistd.h>
 # include <algorithm>
+# include <sstream>
 # include "Client.hpp"
 # include "Channel.hpp"
 # include "replies.hpp"
@@ -27,6 +28,14 @@ typedef struct s_cmd
 	std::string	message;
 	Client		*client;
 }	t_cmd;
+
+typedef struct s_mode
+{
+	std::string mode;
+	std::string target;
+	std::string params;
+	std::string nick;
+}	t_mode;
 
 class Server
 {
@@ -54,6 +63,9 @@ private:
 	void command_join(t_cmd cmd);
 	void command_pass(t_cmd cmd);
 	void command_quit(t_cmd cmd);
+	void command_mode(t_cmd cmd);
+	void mode_key(t_mode mode, Client *client);
+	void mode_limit(t_mode mode, Client *client);
 	void send_reply(const int client_fd, std::string buf);
 	void add_client_to_channel(std::string name, Client *client);
 	void new_channel(std::string name);

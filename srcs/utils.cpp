@@ -10,3 +10,13 @@ std::string	get_reason(std::string msg)
 		reason.append(msg, msg.find(":") + 1, std::string::npos);
 	return (reason);
 }
+
+bool is_alpha(std::string str) 
+{
+    for (size_t i = 0; i < str.length(); i++) 
+	{
+        if (!isalpha(str[i])) 
+            return (false);
+    }
+    return (true);
+}

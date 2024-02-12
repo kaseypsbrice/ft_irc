@@ -41,18 +41,15 @@ static std::vector<std::string> get_keys(std::string msg)
 	keys.clear();
 	size_t delim;
 
-	delim = msg.find(" ");
-	if (delim == std::string::npos || msg.size() < delim + 2)
-		return keys;
-	msg = msg.substr(delim + 1);
+	msg = msg.substr(msg.find(" ") + 1);
 	while (1)
 	{
 		delim = msg.find(",");
 		tmp = msg.substr(0, delim);
 		while (tmp.find(" ") != std::string::npos)
 			tmp.erase(tmp.find(" "), 1);
-		if (is_valid_str(tmp))
-			keys.push_back(tmp.erase(0, 1));
+		if (is_alpha(tmp))
+			keys.push_back(tmp);
 		msg = msg.substr(delim + 1);
 		if (delim == std::string::npos)
 			break ;
@@ -111,6 +108,8 @@ void Server::command_join(t_cmd cmd)
 
 	std::vector<std::string> channels = get_channels(cmd.message);
 	std::vector<std::string> keys = get_keys(cmd.message);
+	if (!keys.empty())
+		std::cout << keys[0] << std::endl;
 
 	if (channels.empty())
 	{
@@ -134,7 +133,7 @@ void Server::command_join(t_cmd cmd)
 		{
 			// check if key does not match channel password
 			if (!existing_channel->second.get_channel_password().empty() && \
-			(keys_it == keys.end() || *keys_it != existing_channel->second.get_channel_password()))
+			((keys_it == keys.end() || *keys_it != existing_channel->second.get_channel_password())))
 			{
 				cmd.client->set_writebuf(ERR_BADCHANNELKEY(cmd.client->get_nick(), existing_channel->second.get_name()));
 				channels_it++;

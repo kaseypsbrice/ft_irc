@@ -7,6 +7,7 @@
 # include <iostream>
 # include <algorithm>
 
+
 class Channel
 {
 private:
@@ -17,6 +18,7 @@ private:
 	std::string _channel_password;
 	std::string _operator_password;
 	std::vector<int> _operators;
+	int				_capacity;
 public:
 	Channel(std::string name);
 	~Channel();
@@ -24,6 +26,9 @@ public:
 	std::string &get_name();
 	std::string &get_topic();
 	std::string &get_channel_password();
+	std::string &get_mode();
+	void set_channel_password(std::string pass);
+	void remove_channel_password();
 	std::string get_symbol();
 	std::vector<int> &get_operators();
 	std::map<const int, Client *> &get_client_map();
@@ -31,10 +36,15 @@ public:
 	Client *get_client_by_fd(const int client_fd);
 	void add_client(Client *client);
 	void add_operator(Client *client);
+	void add_mode(std::string str);
+	void remove_mode(std::string str);
 	int remove_client(Client *client);
 	void remove_operator(Client *client);
+	void broadcast_string(std::string str);
 	bool is_full();
 	bool is_nick_operator(std::string nick);
+	int	&get_capacity();
+	void set_capacity(int val);
 };
 
 #endif

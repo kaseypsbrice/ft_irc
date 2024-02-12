@@ -14,7 +14,8 @@ srcs/commands/user.cpp \
 srcs/commands/privmsg.cpp \
 srcs/commands/join.cpp \
 srcs/commands/pass.cpp \
-srcs/commands/quit.cpp
+srcs/commands/quit.cpp \
+srcs/commands/mode.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

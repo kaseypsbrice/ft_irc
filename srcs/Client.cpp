@@ -2,7 +2,12 @@
 
 Client::Client(int client_fd) : _nick(""), _user(""), _client_fd(client_fd), _registered_nick(false),\
 _registered_user(false), _registered(false), _password_correct(false), _to_remove(false)
-{}
+{
+	_readbuf.clear();
+	_writebuf.clear();
+	_old_nick.clear();
+	_real.clear();
+}
 
 Client::~Client()
 {}
