@@ -48,6 +48,7 @@ private:
 	std::map<const int, Client> _client_map;
 	std::map<std::string, Channel> _channel_map;
 	std::vector<pollfd> _poll_fds;
+	std::map<std::string, std::string> _operator_map;
 
 	std::string	get_list_of_members(Channel *channel);
 	int accept_socket(int listenSocket) const;
@@ -64,8 +65,14 @@ private:
 	void command_pass(t_cmd cmd);
 	void command_quit(t_cmd cmd);
 	void command_mode(t_cmd cmd);
+	void command_invite(t_cmd cmd);
+	void command_ping(t_cmd cmd);
+	void command_oper(t_cmd cmd);
 	void mode_key(t_mode mode, Client *client);
 	void mode_limit(t_mode mode, Client *client);
+	void mode_operator(t_mode mode, Client *client);
+	void mode_invite(t_mode mode, Client *client);
+	void mode_topic(t_mode mode, Client *client);
 	void send_reply(const int client_fd, std::string buf);
 	void add_client_to_channel(std::string name, Client *client);
 	void new_channel(std::string name);
@@ -73,6 +80,7 @@ private:
 	void broadcast_channel_message(Channel *channel, Client *client, std::string target, std::string message);
 	void remove_client(Client *client);
 	bool is_nick_taken(std::string nick, const int client_fd);
+
 public:
 	Server(std::string port, std::string password);
 	~Server();
@@ -82,6 +90,7 @@ public:
 	Client *get_client(const int client_fd);
 	Client *get_client_by_nick(std::string nick);
 	Channel *get_channel(std::string name);
+	void add_operator(std::string user, std::string password);
 };
 
 #endif

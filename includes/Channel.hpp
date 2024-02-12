@@ -18,6 +18,7 @@ private:
 	std::string _channel_password;
 	std::string _operator_password;
 	std::vector<int> _operators;
+	std::vector<int> _whitelist;
 	int				_capacity;
 public:
 	Channel(std::string name);
@@ -36,13 +37,16 @@ public:
 	Client *get_client_by_fd(const int client_fd);
 	void add_client(Client *client);
 	void add_operator(Client *client);
+	void add_whitelist(Client *client);
 	void add_mode(std::string str);
 	void remove_mode(std::string str);
 	int remove_client(Client *client);
 	void remove_operator(Client *client);
+	void remove_whitelist(Client *client);
 	void broadcast_string(std::string str);
 	bool is_full();
 	bool is_nick_operator(std::string nick);
+	bool is_whitelisted(Client *Client);
 	int	&get_capacity();
 	void set_capacity(int val);
 };

@@ -22,6 +22,7 @@ int	main(int argc, char **argv)
 	Server server(argv[1], argv[2]);
 	if (server.create_server())
 		return (1);
+	server.add_operator("admin", "password");
 	if (server.server_loop())
 		return (1);
 	return (0);

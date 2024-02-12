@@ -223,3 +223,8 @@ void Server::new_channel(std::string name)
 
 	_channel_map.insert(std::pair<std::string, Channel>(name, new_channel));
 }
+
+void Server::add_operator(std::string user, std::string password)
+{
+	_operator_map.insert(std::pair<std::string, std::string>(user, password));
+}

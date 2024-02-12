@@ -1,7 +1,7 @@
 #include "Client.hpp"
 
 Client::Client(int client_fd) : _nick(""), _user(""), _client_fd(client_fd), _registered_nick(false),\
-_registered_user(false), _registered(false), _password_correct(false), _to_remove(false)
+_registered_user(false), _registered(false), _password_correct(false), _to_remove(false), _operator(false)
 {
 	_readbuf.clear();
 	_writebuf.clear();
@@ -36,3 +36,5 @@ bool Client::is_password_correct() { return _password_correct; }
 void Client::set_password_correct(bool val) { _password_correct = val; }
 bool Client::is_to_remove() { return _to_remove; }
 void Client::set_to_remove(bool val) { _to_remove = val; }
+bool Client::is_operator() { return _operator; }
+void Client::set_operator(bool val) { _operator = val; }

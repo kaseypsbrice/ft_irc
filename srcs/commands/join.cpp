@@ -154,7 +154,11 @@ void Server::command_join(t_cmd cmd)
 				keys_it++;
 			continue;
 		}
-		// todo check if banned or invite only
+		if (current_channel->get_mode().find("i") != std::string::npos && !current_channel->is_whitelisted(cmd.client))
+		{
+			cmd.client->set_writebuf(ERR_INVITEONLY(cmd.client->get_nick(), existing_channel->second.get_name()));
+			return ;
+		}
 
 		add_client_to_channel(*channels_it, cmd.client);
 		

@@ -90,6 +90,86 @@ void Server::mode_limit(t_mode mode, Client *client)
 	}
 }
 
+void Server::mode_operator(t_mode mode, Client *client)
+{
+	Channel *channel = get_channel(mode.target);
+	Client *new_op = get_client_by_nick(mode.params);
+
+	if (mode.params.empty())
+		return ;
+	if (new_op == NULL)
+	{
+		client->set_writebuf(ERR_NOSUCHNICK(client->get_nick(), mode.params));
+		client->set_writebuf(ERR_USERNOTINCHANNEL(client->get_nick(), mode.params, mode.target));
+		return ;
+	}
+	if (channel->get_client_by_fd(new_op->get_client_fd()) == NULL)
+	{
+		client->set_writebuf(ERR_USERNOTINCHANNEL(client->get_nick(), mode.params, mode.target));
+		return ;
+	}
+	if (mode.mode[0] == '+')
+	{
+		if (channel->is_nick_operator(mode.params))
+			return ;
+		
+		channel->add_operator(new_op);
+		channel->broadcast_string(MODE_CHANNELMSGWITHPARAM(mode.target, "+o", mode.params));
+	}
+	else
+	{
+		if (!channel->is_nick_operator(mode.params))
+			return ;
+		channel->remove_operator(new_op);
+		channel->broadcast_string(MODE_CHANNELMSGWITHPARAM(mode.target, "-o", mode.params));
+	}
+
+}
+
+void Server::mode_invite(t_mode mode, Client *client)
+{
+	(void)client;
+	Channel *channel = get_channel(mode.target);
+	size_t pos = channel->get_mode().find("i");
+
+	if (mode.mode[0] == '+')
+	{
+		if (pos != std::string::npos)
+			return ;
+		channel->add_mode("i");
+		channel->broadcast_string(MODE_CHANNELMSG(mode.target, "+i"));
+	}
+	else
+	{
+		if (pos == std::string::npos)
+			return ;
+		channel->remove_mode("i");
+		channel->broadcast_string(MODE_CHANNELMSG(mode.target, "-i"));
+	}
+}
+
+void Server::mode_topic(t_mode mode, Client *client)
+{
+	(void)client;
+	Channel *channel = get_channel(mode.target);
+	size_t pos = channel->get_mode().find("t");
+
+	if (mode.mode[0] == '+')
+	{
+		if (pos != std::string::npos)
+			return ;
+		channel->add_mode("t");
+		channel->broadcast_string(MODE_CHANNELMSG(mode.target, "+t"));
+	}
+	else
+	{
+		if (pos == std::string::npos)
+			return ;
+		channel->remove_mode("t");
+		channel->broadcast_string(MODE_CHANNELMSG(mode.target, "-t"));
+	}
+}
+
 void Server::command_mode(t_cmd cmd)
 {
 	t_mode mode;
@@ -121,9 +201,9 @@ void Server::command_mode(t_cmd cmd)
 		cmd.client->set_writebuf(ERR_CHANOPRIVSNEEDED(cmd.client->get_nick(), channel->get_name()));
 		return ;
 	}
-	std::cout << "mode: " << mode.mode << std::endl;
-	std::cout << "target: " << mode.target << std::endl;
-	std::cout << "params: " << mode.params << std::endl;
+	//std::cout << "mode: " << mode.mode << std::endl;
+	//std::cout << "target: " << mode.target << std::endl;
+	//std::cout << "params: " << mode.params << std::endl;
 	if (mode.mode[0] != '+' && mode.mode[0] != '-')
 		return ;
 
@@ -135,11 +215,18 @@ void Server::command_mode(t_cmd cmd)
 			tmp.mode = mode.mode.substr(0, i + 2);
 			mode.mode.erase(0, i + 2);
 			i = 0;
-			std::cout << tmp.mode << std::endl;
+			//std::cout << tmp.mode << std::endl;
 			if (tmp.mode.find("k") != std::string::npos)
 				mode_key(tmp, cmd.client);
 			else if (tmp.mode.find("l") != std::string::npos)
 				mode_limit(tmp, cmd.client);
+			else if (tmp.mode.find("o") != std::string::npos)
+				mode_operator(tmp, cmd.client);
+			else if (tmp.mode.find("i") != std::string::npos)
+				mode_invite(tmp, cmd.client);
+			else if (tmp.mode.find("t") != std::string::npos)
+				mode_topic(tmp, cmd.client);
+			
 		}
 	}
 }

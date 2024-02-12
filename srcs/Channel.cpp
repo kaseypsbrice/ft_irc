@@ -8,6 +8,7 @@ Channel::Channel(std::string name) : _name(name), _capacity(-1)
 	_topic.clear();
 	_operators.clear();
 	_client_map.clear();
+	_whitelist.clear();
 }
 
 Channel::~Channel()
@@ -80,6 +81,8 @@ int Channel::remove_client(Client *client)
 {
 	if (_client_map.find(client->get_client_fd()) != _client_map.end())
 	{
+		remove_whitelist(client);
+		remove_operator(client);
 		_client_map.erase(client->get_client_fd());
 		return 1;
 	}
@@ -106,6 +109,29 @@ bool Channel::is_nick_operator(std::string nick)
 	if (it != _operators.end())
 		return true;
 	return false;
+}
+
+bool Channel::is_whitelisted(Client *client)
+{
+	std::vector<int>::iterator it;
+	it = std::find(_whitelist.begin(), _whitelist.end(), client->get_client_fd());
+	if (it != _whitelist.end())
+		return true;
+	return false;
+}
+
+void Channel::add_whitelist(Client *client)
+{
+	if (!is_whitelisted(client))
+		_whitelist.push_back(client->get_client_fd());
+}
+
+void Channel::remove_whitelist(Client *client)
+{
+	std::vector<int>::iterator it;
+	it = std::find(_whitelist.begin(), _whitelist.end(), client->get_client_fd());
+	if (it != _whitelist.end())
+		_whitelist.erase(it);
 }
 
 std::string Channel::get_symbol()

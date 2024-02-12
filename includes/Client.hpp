@@ -18,6 +18,7 @@ private:
 	bool		_registered;
 	bool		_password_correct;
 	bool		_to_remove;
+	bool		_operator;
 
 public:
 	Client(int client_fd);
@@ -46,6 +47,8 @@ public:
 	void set_password_correct(bool val);
 	bool is_to_remove();
 	void set_to_remove(bool val);
+	bool is_operator();
+	void set_operator(bool val);
 };
 
 
