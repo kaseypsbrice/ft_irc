@@ -68,6 +68,7 @@ private:
 	void command_invite(t_cmd cmd);
 	void command_ping(t_cmd cmd);
 	void command_oper(t_cmd cmd);
+	void command_part(t_cmd cmd);
 	void mode_key(t_mode mode, Client *client);
 	void mode_limit(t_mode mode, Client *client);
 	void mode_operator(t_mode mode, Client *client);

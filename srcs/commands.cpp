@@ -50,7 +50,7 @@ int	Server::execute_command(t_cmd cmd)
 		case 9: command_nick(cmd); break;
     	case 10: command_pass(cmd); break;
 		case 11: command_oper(cmd); break;
-		case 12: ; break; // part
+		case 12: command_part(cmd); break; // part
 		case 13: command_ping(cmd); break;
 		case 14: command_privmsg(cmd); break;
 		case 15: command_quit(cmd); break;

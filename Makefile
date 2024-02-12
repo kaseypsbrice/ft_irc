@@ -18,7 +18,8 @@ srcs/commands/quit.cpp \
 srcs/commands/mode.cpp \
 srcs/commands/invite.cpp \
 srcs/commands/ping.cpp \
-srcs/commands/oper.cpp
+srcs/commands/oper.cpp \
+srcs/commands/part.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
