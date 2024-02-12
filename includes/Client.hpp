@@ -16,6 +16,8 @@ private:
 	bool		_registered_nick;
 	bool		_registered_user;
 	bool		_registered;
+	bool		_password_correct;
+	bool		_to_remove;
 
 public:
 	Client(int client_fd);
@@ -40,6 +42,10 @@ public:
 	void set_user_registered(bool val);
 	bool is_registered();
 	void set_registered(bool val);
+	bool is_password_correct();
+	void set_password_correct(bool val);
+	bool is_to_remove();
+	void set_to_remove(bool val);
 };
 
 

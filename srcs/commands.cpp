@@ -13,7 +13,7 @@ int	Server::execute_command(t_cmd cmd)
 		"MOTD",
 		"NAMES",
 		"NICK",
-		"NOTICE",
+		"PASS",
 		"OPER",
 		"PART",
 		"PING",
@@ -48,12 +48,12 @@ int	Server::execute_command(t_cmd cmd)
 		case 7: ; break;
 		case 8: ; break;
 		case 9: command_nick(cmd); break;
-    	case 10: ; break;
+    	case 10: command_pass(cmd); break;
 		case 11: ; break;
 		case 12: ; break;
 		case 13: ; break;
 		case 14: command_privmsg(cmd); break;
-		case 15: ; break;
+		case 15: command_quit(cmd); break;
 		case 16: ; break;
 		case 17: command_user(cmd); break;
 		default:

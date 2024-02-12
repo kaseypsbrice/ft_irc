@@ -31,7 +31,7 @@ public:
 	Client *get_client_by_fd(const int client_fd);
 	void add_client(Client *client);
 	void add_operator(Client *client);
-	void remove_client(Client *client);
+	int remove_client(Client *client);
 	void remove_operator(Client *client);
 	bool is_full();
 	bool is_nick_operator(std::string nick);

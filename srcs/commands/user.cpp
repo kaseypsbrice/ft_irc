@@ -58,6 +58,12 @@ void Server::command_user(t_cmd cmd)
 		cmd.client->set_user_registered(true);
 		if (!cmd.client->is_registered() && cmd.client->is_nick_registered())
 		{
+			if (!cmd.client->is_password_correct())
+			{
+				cmd.client->set_writebuf(ERR_PASSWDMISMATCH(cmd.client->get_nick()));
+				cmd.client->set_to_remove(true);
+				return ;
+			}
 			cmd.client->set_registered(true);
 			cmd.client->set_writebuf(RPL_WELCOME(user_id(cmd.client->get_nick(), cmd.client->get_user()), cmd.client->get_nick()));
 		}

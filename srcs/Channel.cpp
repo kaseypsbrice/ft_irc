@@ -62,12 +62,19 @@ void Channel::remove_operator(Client *client)
 
 	it = std::find(_operators.begin(), _operators.end(), client->get_client_fd());
 	if (it != _operators.end())
+	{
 		_operators.erase(it);
+	}
 }
 
-void Channel::remove_client(Client *client)
+int Channel::remove_client(Client *client)
 {
-	_client_map.erase(client->get_client_fd());
+	if (_client_map.find(client->get_client_fd()) != _client_map.end())
+	{
+		_client_map.erase(client->get_client_fd());
+		return 1;
+	}
+	return 0;
 }
 
 bool Channel::is_full()

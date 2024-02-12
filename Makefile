@@ -7,11 +7,14 @@ srcs/Server.cpp \
 srcs/Client.cpp \
 srcs/Channel.cpp \
 srcs/message.cpp \
+srcs/utils.cpp \
 srcs/commands.cpp \
 srcs/commands/nick.cpp \
 srcs/commands/user.cpp \
 srcs/commands/privmsg.cpp \
-srcs/commands/join.cpp
+srcs/commands/join.cpp \
+srcs/commands/pass.cpp \
+srcs/commands/quit.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

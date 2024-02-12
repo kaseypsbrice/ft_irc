@@ -79,28 +79,30 @@ int Server::new_connection(std::vector<pollfd> &poll_fds, std::vector<pollfd> &n
 
 	// Client class to hold all the client's information
 	Client new_client(new_client_poll.fd);
+	if (_password == "")
+		new_client.set_password_correct(true);
 	_client_map.insert(std::pair<const int, Client>(new_client_poll.fd, new_client));
 	new_poll_fds.push_back(new_client_poll);
-	std::cout << "Client connection established" << std::endl;
+	std::cout << "Client connection established on fd " << new_client_poll.fd << std::endl;
+	std::cout << "Active connections " << poll_fds.size() << std::endl;
 	return 0;
 }
 
 int	Server::server_loop()
 {
-	std::vector<pollfd> poll_fds; // stores all the file descriptors to poll (wait to send/recieve data)
+	// stores all the file descriptors to poll (wait to send/recieve data)
 	pollfd	server_poll_fd;
 
 	server_poll_fd.fd = _socket_fd;
 	server_poll_fd.events = POLLIN;
 
-	poll_fds.push_back(server_poll_fd);
+	_poll_fds.push_back(server_poll_fd);
 
 	while (1)
 	{
 		std::vector<pollfd> new_poll_fds;
 
-		//std::cout << "polling..." << std::endl;
-		if (poll((pollfd *)&poll_fds[0], (unsigned int)poll_fds.size(), -1) <= 0)
+		if (poll((pollfd *)&_poll_fds[0], (unsigned int)_poll_fds.size(), -1) <= 0)
 		{
 			if (errno == EINTR) // interrupt signal to cleanly quit
 				break ;
@@ -108,31 +110,41 @@ int	Server::server_loop()
 			return 1;
 		}
 		
-		std::vector<pollfd>::iterator it = poll_fds.begin();
-		while (it != poll_fds.end())
+		std::vector<pollfd>::iterator it = _poll_fds.begin();
+		while (it != _poll_fds.end())
 		{
 			if (it->revents & POLLIN) // if the event is an input
 			{
 				if (it->fd == _socket_fd) // if the file descriptor is the server socket
 				{
 					// create a new connection, future data is sent to a separate client file descriptor
-					if (new_connection(poll_fds, new_poll_fds))
+					if (new_connection(_poll_fds, new_poll_fds))
 						continue ;
 				}
 				else
 				{
 					// if it is not the server file descriptor then it is an existing client
-					handle_existing_client(poll_fds, it);
+					if (handle_existing_client(_poll_fds, it))
+						break ;
 				}
 			}
 			else if (it->revents & POLLOUT)
 			{
-				handle_poll_out(poll_fds, it);
+				if (handle_poll_out(_poll_fds, it))
+					break ;
+			}
+			else if (it->revents & POLLERR)
+			{
+				int	ret = handle_poll_err(it);
+				if (ret == 1)
+					break ;
+				else if (ret == 2)
+					return 1;
 			}
 			it++;
 		}
 		// add any new connections to the vector to poll
-		poll_fds.insert(poll_fds.end(), new_poll_fds.begin(), new_poll_fds.end());
+		_poll_fds.insert(_poll_fds.end(), new_poll_fds.begin(), new_poll_fds.end());
 	}
 	return 0;
 }
@@ -150,8 +162,30 @@ void Server::add_client_to_channel(std::string name, Client *client)
 	channel->add_client(client);
 }
 
+void Server::remove_client(Client *client)
+{
+	std::map<std::string, Channel>::iterator channel_it;
+	for (channel_it = _channel_map.begin(); channel_it != _channel_map.end(); channel_it++)
+	{
+		channel_it->second.remove_client(client);
+	}
+
+	std::vector<pollfd>::iterator poll_it;
+	for (poll_it = _poll_fds.begin(); poll_it != _poll_fds.end(); poll_it++)
+	{
+		if (poll_it->fd == client->get_client_fd())
+		{
+			_poll_fds.erase(poll_it);
+			break ;
+		}
+	}
+	close(client->get_client_fd());
+	_client_map.erase(client->get_client_fd());
+	std::cout << "Client " << client->get_nick() << " removed on fd " << client->get_client_fd() << std::endl;
+}
+
 // looks up the client in the map by its file descriptor
-Client* Server::get_client(const int client_fd)
+Client *Server::get_client(const int client_fd)
 {
 	std::map<const int, Client>::iterator it_client = _client_map.find(client_fd);
 	

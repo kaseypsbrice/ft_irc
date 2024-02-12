@@ -57,7 +57,12 @@ int Server::handle_poll_out(std::vector<pollfd>& poll_fds, std::vector<pollfd>::
 	}
 	send_reply(it->fd, client->get_writebuf());
 	client->get_writebuf().clear();
-	(void)poll_fds; // todo client disconnect
+	(void)poll_fds;
+	if (client->is_to_remove())
+	{
+		remove_client(client);
+		return 1;
+	}
 	return 0;
 }
 
@@ -75,16 +80,40 @@ int	Server::handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<po
 	if (size < 0)
 	{
 		std::cerr << "Recv failed" << std::endl;
+		client->set_to_remove(true);
 		return 1;
 	}
 	if (size == 0)
 	{
-		// client disconnected
+		std::cout << "Empty message" << std::endl;
+		remove_client(client);
 		return 1;
 	}
 	std::cout << "Recieved Message:" << std::endl << message;
 	// messages are buffered in case of partial data transfer
 	client->set_readbuf(message);
 	process_message(client);
+	return 0;
+}
+
+int Server::handle_poll_err(std::vector<pollfd>::iterator &it)
+{
+	std::cout << "Poll error" << std::endl;
+	if (it->fd == _socket_fd)
+	{
+		std::cout << "Listen socket error" << std::endl;
+		return 2;
+	}
+	else
+	{
+		Client *client = get_client(it->fd);
+		if (client == NULL)
+		{
+			std::cout << "handle_poll_err: unable to find client" << std::endl;
+			return 1;
+		}
+		client->set_to_remove(true);
+		return 1;
+	}
 	return 0;
 }

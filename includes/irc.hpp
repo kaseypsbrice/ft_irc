@@ -18,4 +18,6 @@
 
 # include "Server.hpp"
 
+std::string	get_reason(std::string msg);
+
 #endif
