@@ -130,11 +130,13 @@ int	Server::server_loop()
 			}
 			else if (it->revents & POLLOUT)
 			{
+				// send client writebuf or close connection
 				if (handle_poll_out(_poll_fds, it))
 					break ;
 			}
 			else if (it->revents & POLLERR)
 			{
+				// exit with an error if poll on server fd fails, restart loop if client fails (client is removed)
 				int	ret = handle_poll_err(it);
 				if (ret == 1)
 					break ;
@@ -162,6 +164,7 @@ void Server::add_client_to_channel(std::string name, Client *client)
 	channel->add_client(client);
 }
 
+// removes client from channels and server
 void Server::remove_client(Client *client)
 {
 	std::map<std::string, Channel>::iterator channel_it;
@@ -229,6 +232,7 @@ void Server::add_operator(std::string user, std::string password)
 	_operator_map.insert(std::pair<std::string, std::string>(user, password));
 }
 
+// send a message to all clients
 void Server::broadcast_all(std::string message)
 {
 	std::map<const int, Client>::iterator it;

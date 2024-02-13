@@ -11,6 +11,8 @@ static void broadcast_quit(Channel &channel, std::string nick, std::string user,
 	}
 }
 
+// leave the server with a reason(optional)
+// QUIT :reason
 void Server::command_quit(t_cmd cmd)
 {
 	std::string reason = get_reason(cmd.message);

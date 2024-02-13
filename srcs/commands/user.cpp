@@ -42,6 +42,9 @@ static std::string get_real_name(std::string msg)
 	return (real_name);
 }
 
+// sets the username and realname of client
+// second and third arguments are discarded
+// USER sam 0 * samuel
 void Server::command_user(t_cmd cmd)
 {
 	std::string user_name = get_user_name(cmd.message);
@@ -60,12 +63,15 @@ void Server::command_user(t_cmd cmd)
 		cmd.client->set_user_registered(true);
 		if (!cmd.client->is_registered() && cmd.client->is_nick_registered())
 		{
+			// check if server password is correct
 			if (!cmd.client->is_password_correct())
 			{
 				cmd.client->set_writebuf(ERR_PASSWDMISMATCH(cmd.client->get_nick()));
 				cmd.client->set_to_remove(true);
 				return ;
 			}
+
+			// if not registered and nickname has been set, welcome client to server
 			cmd.client->set_registered(true);
 			cmd.client->set_writebuf(RPL_WELCOME(user_id(cmd.client->get_nick(), cmd.client->get_user()), cmd.client->get_nick()));
 		}

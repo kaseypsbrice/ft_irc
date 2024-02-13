@@ -9,6 +9,7 @@ static std::string find_nick(std::string msg)
 	return msg.substr(0, msg.find(' '));
 }
 
+// extract reason for kick or default to "no reason given"
 static std::string find_comment(std::string msg)
 {
 	std::string comment;
@@ -24,6 +25,8 @@ static std::string find_comment(std::string msg)
 	return comment.empty() ? "no reason given" : comment;
 }
 
+// terminates a clients connection, requires server operator
+// KILL sam :too much spam (kills sam with the reason "too much spam")
 void Server::command_kill(t_cmd cmd)
 {
 	std::string killed = find_nick(cmd.message);
@@ -47,13 +50,17 @@ void Server::command_kill(t_cmd cmd)
 		return ;
 	}
 
+	// inform killed client
 	killed_client->set_writebuf(RPL_KILL(user_id(killer, cmd.client->get_user()), killed, comment));
 
+	// inform the rest of the server
 	std::string quit_reason = ":Killed (" + killer + " (" + comment + "))";
 	broadcast_all(RPL_QUIT(user_id(killed, killed_client->get_user()), quit_reason));
 
+	// inform client of connection termination
 	std::string error_reason = ":Closing Link: localhost. Killed (" + killer + " (" + comment + "))";
 	killed_client->set_writebuf(RPL_ERROR(user_id(killed, killed_client->get_user()), error_reason));
 
+	// remove client
 	killed_client->set_to_remove(true);
 }

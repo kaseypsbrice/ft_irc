@@ -1,5 +1,7 @@
 #include "irc.hpp"
 
+// lists the names of clients for channels
+// NAMES #test,#test
 void Server::command_names(t_cmd cmd)
 {
 	std::vector<std::string> channels = get_channels(cmd.message);

@@ -33,12 +33,17 @@ void Server::broadcast_channel_join(Channel *channel, Client *client)
 
 	for (it = channel->get_client_map().begin(); it != channel->get_client_map().end(); it++)
 	{
-
+		// send join message to each client in channel
 		it->second->set_writebuf(RPL_JOIN(user_id(nick, user), channel_name));
+
+		// send topic if it exists
 		if (!channel->get_topic().empty())
 			it->second->set_writebuf(RPL_TOPIC(nick, channel_name, channel->get_topic()));
 		
+		// send list of members
 		std::string	list_of_members = get_list_of_members(channel);
+
+		// intended to allow for private channels but is unimplemented, returns '='
 		std::string symbol = channel->get_symbol();
 
 		it->second->set_writebuf(RPL_NAMREPLY(user, symbol, channel_name, list_of_members));
@@ -46,6 +51,7 @@ void Server::broadcast_channel_join(Channel *channel, Client *client)
 	}
 }
 
+// return a string containing channel members
 std::string	Server::get_list_of_members(Channel *channel)
 {
 	std::map<const int, Client *> client_map = channel->get_client_map();
@@ -68,6 +74,9 @@ std::string	Server::get_list_of_members(Channel *channel)
 	return (members_list);
 }
 
+// joins a list of channels using a list of keys (when server mode has +k)
+// creates channels that do not exist
+// JOIN #test,#test2 pass (joins #test with password pass and joins test2 with no password)
 void Server::command_join(t_cmd cmd)
 {
 	//cmd.message.erase(std::remove(cmd.message.begin(), cmd.message.end(), '\n'), cmd.message.end());

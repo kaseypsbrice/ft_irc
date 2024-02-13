@@ -19,6 +19,7 @@ static std::string get_message(std::string msg)
 	return msg;
 }
 
+// broadcast message to every client in channel except caller
 void Server::broadcast_channel_message(Channel *channel, Client *client, std::string target, std::string message)
 {
 	std::map<const int, Client *> client_map = channel->get_client_map();
@@ -39,6 +40,8 @@ void Server::broadcast_channel_message(Channel *channel, Client *client, std::st
 	}
 }
 
+// sends a private message to a channel or client
+// PRIVMSG #channel :hello OR PRIVMSG user :hello
 void Server::command_privmsg(t_cmd cmd)
 {
 	if (cmd.message.find(":") == std::string::npos)

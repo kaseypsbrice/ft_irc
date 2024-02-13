@@ -1,6 +1,7 @@
 #include "irc.hpp"
 
-
+// generate a string of channel information: name, number of clients and topic
+// LIST #test OR LIST
 static std::string	get_list(std::string client_nick, Channel *channel)
 {
 	std::stringstream concat;
@@ -20,10 +21,12 @@ void Server::command_list(t_cmd cmd)
 	std::string	RPL_LISTEND 		= "323 " + nick + " :End of /LIST\r\n";
 	std::string channel_name;
 
+	// extract channel name
 	channel_name.clear();
 	if (cmd.message.find('#') != std::string::npos)
 		channel_name = get_channel_name(cmd.message.substr(cmd.message.find('#')));
 
+	// if not channel name is provided list all channels
 	if (channel_name.empty())
 	{
 		if (_channel_map.empty())
@@ -41,7 +44,7 @@ void Server::command_list(t_cmd cmd)
 		}
 		cmd.client->set_writebuf(RPL_LISTEND);
 	}
-	else
+	else // list channel provided
 	{
 		Channel *channel = get_channel(channel_name);
 

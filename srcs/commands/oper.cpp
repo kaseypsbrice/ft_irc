@@ -27,6 +27,10 @@ static std::string	get_password(std::string msg_to_parse)
 	return (password);
 }
 
+// "login" to operator account to gain operator rights
+// clients do not persist after disconnection so this is poorly implemented
+// operator accounts are registered manually with Server::add_operator()
+// OPER user password
 void Server::command_oper(t_cmd cmd)
 {
 	std::string name = get_name(cmd.message);

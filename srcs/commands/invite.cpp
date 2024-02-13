@@ -1,5 +1,6 @@
 #include "irc.hpp"
 
+// extract client nickname to invite
 static std::string	find_nick(std::string msg_to_parse)
 {
 	std::string nickname;
@@ -15,6 +16,7 @@ static std::string	find_nick(std::string msg_to_parse)
 	return (nickname);
 }
 
+// extract channel to invite to
 static std::string	find_channel(std::string msg_to_parse)
 {
 	std::string channel;
@@ -26,6 +28,8 @@ static std::string	find_channel(std::string msg_to_parse)
 	return (channel);
 }
 
+// invite client to channel
+// INVITE #test sam (invite same to #test)
 void Server::command_invite(t_cmd cmd)
 {
 	std::string nick = cmd.client->get_nick();
@@ -35,32 +39,31 @@ void Server::command_invite(t_cmd cmd)
 	if (channel_name.empty() || invited_client.empty())
 	{
 		cmd.client->set_writebuf(ERR_NEEDMOREPARAMS(nick, cmd.name));
-		return ;
+		return ; // client or channel not provided/invalid
 	}
-
 	Channel *channel = get_channel(channel_name);
 	if (channel == NULL)
 	{
 		cmd.client->set_writebuf(ERR_NOSUCHCHANNEL(nick, channel_name));
-		return ;
+		return ; // channel not found
 	}
 	if (channel->get_client_by_name(nick) == NULL)
 	{
 		cmd.client->set_writebuf(ERR_NOTONCHANNEL(nick, channel_name));
-		return ;
+		return ; // client is not in channel
 	}
 	if (channel->get_client_by_name(invited_client) != NULL)
 	{
 		cmd.client->set_writebuf(ERR_USERONCHANNEL(nick, invited_client, channel_name));
-		return ;
+		return ; // invited client already in channel
 	}
 	Client *inv_client = get_client_by_nick(invited_client);
 	if (inv_client == NULL)
 	{
 		cmd.client->set_writebuf(ERR_NOSUCHNICK(nick, invited_client));
-		return ;
+		return ; // client does not exist
 	}
-	channel->add_whitelist(inv_client);
+	channel->add_whitelist(inv_client); // add client to whitelist so they can join invite only server
 	cmd.client->set_writebuf(RPL_INVITING(user_id(nick, cmd.client->get_user()), nick, invited_client, channel_name));
 	inv_client->set_writebuf(RPL_INVITE(user_id(nick, cmd.client->get_user()), nick, channel_name));
 }

@@ -1,5 +1,7 @@
 #include "irc.hpp"
 
+// must be passed before registering NICK and USER
+// PASS pass
 void Server::command_pass(t_cmd cmd)
 {
 	if (cmd.client->is_registered())

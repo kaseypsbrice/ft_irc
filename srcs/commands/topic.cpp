@@ -38,7 +38,8 @@ static std::string	find_topic(std::string msg_to_parse)
 	return (topic);
 }
 
-
+// sets or prints topic of channel, setting requires channel operator if +t mode is set
+// TOPIC #channel OR TOPIC #channel :new topic
 void Server::command_topic(t_cmd cmd)
 {
 	std::string nick = cmd.client->get_nick();

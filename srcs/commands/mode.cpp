@@ -1,5 +1,13 @@
 # include "irc.hpp"
 
+// fills t_mode struct
+// target = channel name
+// mode = +i -i etc
+// params = target of invite or operator mode
+// initially contains all the modes provided and is duplicated to pass into
+// each individual mode function
+// "+o-l" mode is passed to mode_operator and mode_limit as "+o" and "-l" separately
+// with the same target and same params
 static void	fill_mode(t_mode &mode, std::string command)
 {	
 	size_t	pos;
@@ -31,6 +39,7 @@ static void	fill_mode(t_mode &mode, std::string command)
 	mode.params = command.substr(0);
 }
 
+// +k -k sets or removes channel password
 void Server::mode_key(t_mode mode, Client *client)
 {
 	Channel *channel = get_channel(mode.target);
@@ -61,6 +70,7 @@ void Server::mode_key(t_mode mode, Client *client)
 	}
 }
 
+// +l -l sets or removes capacity of server
 void Server::mode_limit(t_mode mode, Client *client)
 {
 	Channel *channel = get_channel(mode.target);
@@ -90,6 +100,7 @@ void Server::mode_limit(t_mode mode, Client *client)
 	}
 }
 
+// +o doesnt edit mode string, makes a client operator of channel
 void Server::mode_operator(t_mode mode, Client *client)
 {
 	Channel *channel = get_channel(mode.target);
@@ -126,6 +137,7 @@ void Server::mode_operator(t_mode mode, Client *client)
 
 }
 
+// +i -i invite only mode
 void Server::mode_invite(t_mode mode, Client *client)
 {
 	(void)client;
@@ -148,6 +160,7 @@ void Server::mode_invite(t_mode mode, Client *client)
 	}
 }
 
+// +t -t does topic command require operator
 void Server::mode_topic(t_mode mode, Client *client)
 {
 	(void)client;
@@ -170,6 +183,8 @@ void Server::mode_topic(t_mode mode, Client *client)
 	}
 }
 
+// changes mode string of server: example mode string "+iot" 
+// MODE #test +k+i pass (sets invite only mode and password to pass in #test channel)
 void Server::command_mode(t_cmd cmd)
 {
 	t_mode mode;
@@ -201,9 +216,7 @@ void Server::command_mode(t_cmd cmd)
 		cmd.client->set_writebuf(ERR_CHANOPRIVSNEEDED(cmd.client->get_nick(), channel->get_name()));
 		return ;
 	}
-	//std::cout << "mode: " << mode.mode << std::endl;
-	//std::cout << "target: " << mode.target << std::endl;
-	//std::cout << "params: " << mode.params << std::endl;
+
 	if (mode.mode[0] != '+' && mode.mode[0] != '-')
 		return ;
 
@@ -215,7 +228,6 @@ void Server::command_mode(t_cmd cmd)
 			tmp.mode = mode.mode.substr(0, i + 2);
 			mode.mode.erase(0, i + 2);
 			i = 0;
-			//std::cout << tmp.mode << std::endl;
 			if (tmp.mode.find("k") != std::string::npos)
 				mode_key(tmp, cmd.client);
 			else if (tmp.mode.find("l") != std::string::npos)

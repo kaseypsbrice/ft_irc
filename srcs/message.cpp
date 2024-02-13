@@ -9,12 +9,12 @@ int Server::process_message(Client *client)
 	// IRC commands are terminated by "\r\n"
 	while (readbuf.find("\r\n") != std::string::npos)
 	{
-		//printf("size: %ld\n", readbuf.size());
 		t_cmd	cmd;
 		cmd.client = client;
 		line_break = readbuf.find("\r\n");
 		line = readbuf.substr(0, line_break);
 		
+		// ':' at start indicates prefix :localhost... etc
 		if (line[0] == ':')
 		{
 			cmd.prefix = line.substr(0, line.find(" "));
@@ -29,14 +29,9 @@ int Server::process_message(Client *client)
 
 		for (size_t i = 0; i < cmd.name.size(); i++)
 			cmd.name[i] = std::toupper(cmd.name[i]);
-		
-		//printf("Command Name:    %s | %ld\n", cmd.name.c_str(), cmd.name.size());
-		//printf("Command Prefix:  %s | %ld\n", cmd.prefix.c_str(), cmd.prefix.size());
-		//printf("Command Message: %s | %ld\n", cmd.message.c_str(), cmd.message.size());
 
 		execute_command(cmd);
 
-		//printf("lb: %d size: %ld\n", line_break + 2, readbuf.size());
 		readbuf = readbuf.substr(line_break + 2);
 	}
 	return (0);
@@ -44,7 +39,11 @@ int Server::process_message(Client *client)
 
 void Server::send_reply(const int client_fd, std::string buf)
 {
-	send(client_fd, buf.c_str(), buf.size(), 0);
+	if (buf.size() > 0)
+	{
+		std::cout << "[SEND][" << get_client(client_fd)->get_nick() << "] " << buf;
+		send(client_fd, buf.c_str(), buf.size(), 0);
+	}
 }
 
 int Server::handle_poll_out(std::vector<pollfd>& poll_fds, std::vector<pollfd>::iterator &it)
@@ -89,7 +88,7 @@ int	Server::handle_existing_client(std::vector<pollfd>& poll_fds, std::vector<po
 		remove_client(client);
 		return 1;
 	}
-	std::cout << "Recieved Message:" << std::endl << message;
+	std::cout << std::endl << "[RECIEVE][" << get_client(it->fd)->get_nick() << "] " << message << std::endl;
 	// messages are buffered in case of partial data transfer
 	client->set_readbuf(message);
 	process_message(client);

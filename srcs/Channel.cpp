@@ -135,6 +135,7 @@ void Channel::remove_whitelist(Client *client)
 		_whitelist.erase(it);
 }
 
+// mostly useless as 'p' and 's' modes arent implemented
 std::string Channel::get_symbol()
 {
 	std::string symbol;

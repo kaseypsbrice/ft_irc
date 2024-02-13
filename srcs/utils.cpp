@@ -1,5 +1,6 @@
 # include "irc.hpp"
 
+// returns a substring after ':' "KICK #channel sam :stinky" = "stinky"
 std::string	get_reason(std::string msg)
 {
 	std::string reason;
@@ -21,6 +22,7 @@ bool is_alpha(std::string str)
     return (true);
 }
 
+// returns a channel name or empty string if no # is found " #test " = "test"
 std::string	get_channel_name(std::string msg_to_parse)
 {
 	std::string channel_name;
@@ -37,6 +39,7 @@ std::string	get_channel_name(std::string msg_to_parse)
 	return (channel_name);
 }
 
+// returns a list of channel names with the # removed "#test,#test2" = ["test1", "test2"]
 std::vector<std::string> get_channels(std::string msg)
 {
 	std::vector<std::string>	channels;

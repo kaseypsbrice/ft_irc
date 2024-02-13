@@ -1,5 +1,7 @@
 #include "irc.hpp"
 
+// replies to PING message with PONG message
+// PING message
 void Server::command_ping(t_cmd cmd)
 {
 	cmd.message.insert(0, ":");
