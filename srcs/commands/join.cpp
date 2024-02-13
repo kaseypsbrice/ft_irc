@@ -1,39 +1,5 @@
 # include "irc.hpp"
 
-static bool is_valid_str(std::string str)
-{
-	if (str.size() < 2)
-		return false;
-	if (str[0] != '#')
-		return false;
-	if (str.find_first_of(" ,.\x07") != std::string::npos)
-		return false;
-	return true;
-}
-
-static std::vector<std::string> get_channels(std::string msg)
-{
-	std::vector<std::string>	channels;
-	std::string tmp;
-	channels.clear();
-	size_t delim;
-
-	msg = msg.substr(0, msg.find(" "));
-	while (1)
-	{
-		delim = msg.find(",");
-		tmp = msg.substr(0, delim);
-		while (tmp.find(" ") != std::string::npos)
-			tmp.erase(tmp.find(" "), 1);
-		if (is_valid_str(tmp))
-			channels.push_back(tmp.erase(0, 1));
-		msg = msg.substr(delim + 1);
-		if (delim == std::string::npos)
-			break ;
-	}
-	return channels;
-}
-
 static std::vector<std::string> get_keys(std::string msg)
 {
 	std::vector<std::string>	keys;

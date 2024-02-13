@@ -18,6 +18,7 @@ std::string &Channel::get_name() { return _name; }
 std::string &Channel::get_topic() { return _topic; }
 std::string &Channel::get_channel_password() { return _channel_password; }
 std::string &Channel::get_mode() { return _mode; }
+void Channel::set_topic(std::string topic) { _topic = topic; }
 std::vector<int> &Channel::get_operators() { return _operators; }
 std::map<const int, Client *> &Channel::get_client_map() { return _client_map; }
 void Channel::set_channel_password(std::string pass) { _channel_password = pass; }

@@ -47,6 +47,8 @@ void Server::command_user(t_cmd cmd)
 	std::string user_name = get_user_name(cmd.message);
 	std::string real_name = get_real_name(cmd.message);
 
+	std::cout << "user: " << user_name << "real: " << real_name << std::endl;
+
 	if (user_name.empty() || real_name.empty())
 		cmd.client->set_writebuf(ERR_NEEDMOREPARAMS(cmd.client->get_nick(), cmd.message));
 	else if (cmd.client->is_registered())

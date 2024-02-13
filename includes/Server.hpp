@@ -69,6 +69,11 @@ private:
 	void command_ping(t_cmd cmd);
 	void command_oper(t_cmd cmd);
 	void command_part(t_cmd cmd);
+	void command_kick(t_cmd cmd);
+	void command_topic(t_cmd cmd);
+	void command_kill(t_cmd cmd);
+	void command_names(t_cmd cmd);
+	void command_list(t_cmd cmd);
 	void mode_key(t_mode mode, Client *client);
 	void mode_limit(t_mode mode, Client *client);
 	void mode_operator(t_mode mode, Client *client);
@@ -92,6 +97,7 @@ public:
 	Client *get_client_by_nick(std::string nick);
 	Channel *get_channel(std::string name);
 	void add_operator(std::string user, std::string password);
+	void broadcast_all(std::string message);
 };
 
 #endif

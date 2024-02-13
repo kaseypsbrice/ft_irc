@@ -28,6 +28,7 @@ public:
 	std::string &get_topic();
 	std::string &get_channel_password();
 	std::string &get_mode();
+	void set_topic(std::string topic);
 	void set_channel_password(std::string pass);
 	void remove_channel_password();
 	std::string get_symbol();

@@ -20,3 +20,41 @@ bool is_alpha(std::string str)
     }
     return (true);
 }
+
+std::string	get_channel_name(std::string msg_to_parse)
+{
+	std::string channel_name;
+	size_t i = 0;
+	//while (msg_to_parse[i] && (!isalpha(msg_to_parse[i]) && !isdigit(msg_to_parse[i]) && msg_to_parse[i] != '-' && msg_to_parse[i] != '_'))
+	//	i++;
+	while (msg_to_parse[i] && msg_to_parse[i] != '#')
+		i++;
+	if (msg_to_parse[i] != '#')
+		return channel_name;
+	i++;
+	while (msg_to_parse[i] && (isalpha(msg_to_parse[i]) || msg_to_parse[i] == '-' || msg_to_parse[i] == '_' || isdigit(msg_to_parse[i])))
+		channel_name += msg_to_parse[i++];
+	return (channel_name);
+}
+
+std::vector<std::string> get_channels(std::string msg)
+{
+	std::vector<std::string>	channels;
+	std::string tmp;
+	channels.clear();
+	size_t delim;
+
+	msg = msg.substr(0, msg.find(" "));
+	while (1)
+	{
+		delim = msg.find(",");
+		tmp = msg.substr(0, delim);
+		tmp = get_channel_name(tmp);
+		if (!tmp.empty())
+			channels.push_back(tmp);
+		if (delim == std::string::npos)
+			break ;
+		msg = msg.substr(delim + 1);
+	}
+	return channels;
+}

@@ -228,3 +228,11 @@ void Server::add_operator(std::string user, std::string password)
 {
 	_operator_map.insert(std::pair<std::string, std::string>(user, password));
 }
+
+void Server::broadcast_all(std::string message)
+{
+	std::map<const int, Client>::iterator it;
+
+	for (it = _client_map.begin(); it != _client_map.end(); it++)
+		it->second.set_writebuf(message);
+}

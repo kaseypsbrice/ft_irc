@@ -29,7 +29,7 @@ int Client::get_client_fd() { return _client_fd; }
 bool Client::is_nick_registered() { return _registered_nick; }
 void Client::set_nick_registered(bool val) { _registered_nick = val; }
 bool Client::is_user_registered() { return _registered_user; }
-void Client::set_user_registered(bool val) { _registered_nick = val; }
+void Client::set_user_registered(bool val) { _registered_user = val; }
 bool Client::is_registered() { return _registered; }
 void Client::set_registered(bool val) { _registered = val; }
 bool Client::is_password_correct() { return _password_correct; }
