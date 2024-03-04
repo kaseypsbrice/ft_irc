@@ -29,7 +29,7 @@ void Server::broadcast_channel_join(Channel *channel, Client *client)
 	std::string user = client->get_user();
 	std::string channel_name = channel->get_name();
 
-	std::map<int, Client *>::iterator it;
+	std::map<const int, Client *>::iterator it;
 
 	for (it = channel->get_client_map().begin(); it != channel->get_client_map().end(); it++)
 	{

@@ -28,7 +28,7 @@ void Channel::set_capacity(int val) { _capacity = val; }
 
 Client *Channel::get_client_by_name(std::string client_name)
 {
-	std::map<int, Client *>::iterator	it;
+	std::map<const int, Client *>::iterator	it;
 
 	for (it = _client_map.begin(); it != _client_map.end(); it++)
 	{
@@ -40,7 +40,7 @@ Client *Channel::get_client_by_name(std::string client_name)
 
 Client *Channel::get_client_by_fd(const int client_fd)
 {
-	std::map<int, Client *>::iterator	it;
+	std::map<const int, Client *>::iterator	it;
 
 	it = _client_map.find(client_fd);
 	if (it == _client_map.end())
